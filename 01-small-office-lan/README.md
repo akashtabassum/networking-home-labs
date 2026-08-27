@@ -1,302 +1,441 @@
-# Lab 1 — Small Office LAN
+# 🧪 Lab 1 — Small Office LAN
 
-📌 Overview
+## 📌 Objective
 
-This is my first hands-on networking home lab, created using **Cisco Packet Tracer**.
+The objective of this lab was to build a basic Local Area Network (LAN) using Cisco Packet Tracer.
 
-The purpose of this lab was to build a basic Local Area Network (LAN), configure IPv4 addressing, connect PCs through a switch, configure a router interface, and test network connectivity.
+The lab focused on IPv4 addressing, router and switch configuration, static IP addressing, default gateways, VLAN verification, DHCP investigation, and connectivity testing.
+
+This lab serves as the foundation for the networking home-lab series.
 
 ---
 
-🎯 Objectives
+## 🛠️ Tools Used
+
+- Cisco Packet Tracer
+- Cisco 2911 Router
+- Cisco 2960 Switch
+- 3 × PCs
+- Copper Straight-Through Ethernet cables
+
+---
+
+# 🏗️ Network Topology
+
+The network consists of one Cisco 2911 router connected to a Cisco 2960 switch, with three PCs connected to the switch.
+
+    Router 2911
+    192.168.1.1
+          |
+          |
+    Switch 2960
+      |    |    |
+     PC0  PC1  PC2
+
+![Network Topology](https://github.com/user-attachments/assets/43589187-32c2-4f69-9fbc-65e0eb1bcdf4)
+
+---
+
+# 1. 🎯 Objectives
+
+The main objectives of this lab were to:
 
 - Build a basic LAN topology
 - Connect a router, switch, and PCs
-- Configure a router interface with an IPv4 address
-- Configure static IPv4 addressing
-- Configure subnet masks and default gateways
-- Verify switch connectivity
-- Test network connectivity using `ping`
-- Practice basic network troubleshooting
+- Configure IPv4 addressing
+- Configure a router interface
+- Configure static IPv4 addresses
+- Configure subnet masks
+- Configure default gateways
+- Verify switch port connectivity
+- Verify VLAN membership
 - Investigate DHCP operation
-
----
- 🖥️ Devices Used
-
-- **Cisco 2911 Router**
-- **Cisco 2960 Switch**
-- **3 PCs**
+- Perform basic network troubleshooting
+- Test connectivity using ping
+- Practice Cisco IOS verification commands
 
 ---
 
-🌐 Network Topology
+# 2. 🔌 Physical Connections
 
-The topology consists of one router connected to a switch, with three PCs connected to the switch.
+The following physical connections were made:
 
-```text
-                    ┌──────────────┐
-                    │  Router 2911 │
-                    │ 192.168.1.1  │
-                    └──────┬───────┘
-                           │
-                           │
-                    ┌──────┴───────┐
-                    │  Switch 2960 │
-                    └─┬────┬────┬──┘
-                      │    │    │
-                     PC0  PC1  PC2
-🔌 Physical Connections
+| Switch Port | Connected Device |
+|---|---|
+| Fa0/1 | Router |
+| Fa0/2 | PC0 |
+| Fa0/3 | PC1 |
+| Fa0/4 | PC2 |
 
-The following connections were made:
+The switch ports were verified using:
 
-Switch Port	Connected Device
-Fa0/1	Router
-Fa0/2	PC0
-Fa0/3	PC1
-Fa0/4	PC2
-
-The switch was checked using:
-
-show interfaces status
+    show interfaces status
 
 The connected ports were shown as:
 
-Fa0/1    connected
-Fa0/2    connected
-Fa0/3    connected
-Fa0/4    connected
-🔀 VLAN Verification
+    Fa0/1    connected
+    Fa0/2    connected
+    Fa0/3    connected
+    Fa0/4    connected
+
+This confirmed that the router and all three PCs had active connections to the switch.
+
+---
+
+# 3. 🏷️ VLAN Verification
 
 The switch VLAN configuration was checked using:
 
-show vlan brief
+    show vlan brief
 
-The connected ports were found in the default VLAN 1:
+The connected devices were operating in the default VLAN:
 
-VLAN 1    default    active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
+    VLAN 1    default    active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
 
 No additional VLANs were configured for this lab.
 
-⚙️ Router Configuration
+This provided a simple Layer 2 LAN environment before introducing VLAN segmentation in later labs.
 
-The router was accessed through the CLI.
+---
+
+# 4. ⚙️ Router Configuration
+
+The router was accessed through the Cisco IOS CLI.
 
 Initially, the router was in User EXEC mode:
 
-Router>
+    Router>
 
-The enable command was used to enter Privileged EXEC mode:
+The following command was used to enter Privileged EXEC mode:
 
-Router> enable
+    enable
 
 The prompt changed to:
 
-Router#
+    Router#
 
 The router interface configuration was then verified using:
 
-show ip interface brief
+    show ip interface brief
 
-The result showed:
+The relevant interface showed:
 
-Interface              IP-Address      Status    Protocol
+    Interface              IP-Address      Status    Protocol
 
-GigabitEthernet0/0     192.168.1.1     up        up
+    GigabitEthernet0/0     192.168.1.1     up        up
 
 This confirmed that the router's GigabitEthernet0/0 interface was operational.
 
-🌐 IP Addressing
+---
 
-The LAN uses the following network:
+# 5. 🌐 IP Addressing
 
-Network: 192.168.1.0/24
-Subnet Mask: 255.255.255.0
+The LAN uses the following IPv4 network:
+
+    Network:       192.168.1.0/24
+    Subnet Mask:   255.255.255.0
 
 The router interface was configured as:
 
-192.168.1.1
+    192.168.1.1
 
-PC0 was configured with a static IP address:
+PC0 was configured with a static IPv4 address:
 
-IP Address:       192.168.1.10
-Subnet Mask:      255.255.255.0
-Default Gateway:  192.168.1.1
-🧪 Initial DHCP Test
+| Parameter | Value |
+|---|---|
+| IP Address | `192.168.1.10` |
+| Subnet Mask | `255.255.255.0` |
+| Default Gateway | `192.168.1.1` |
 
-Before using a static IP, DHCP was tested on PC0.
+---
 
-PC0 initially showed:
+# 6. 🧪 Initial DHCP Test
 
-IPv4 Address: 0.0.0.0
-Subnet Mask:  0.0.0.0
-Default Gateway: 0.0.0.0
+Before using a static IP address, DHCP operation was tested on PC0.
+
+Initially, PC0 showed:
+
+    IPv4 Address:       0.0.0.0
+    Subnet Mask:        0.0.0.0
+    Default Gateway:    0.0.0.0
 
 The PC displayed:
 
-DHCP request failed.
-APIPA is being used.
-🔍 DHCP Troubleshooting
+    DHCP request failed.
+    APIPA is being used.
 
-The router was checked to determine whether a DHCP pool existed.
+This indicated that PC0 was not successfully obtaining an IPv4 address through DHCP.
+
+---
+
+# 7. 🔍 DHCP Troubleshooting
+
+The router was investigated to determine whether a DHCP pool existed.
 
 The following command was used:
 
-show running-config | section dhcp
+    show running-config | section dhcp
 
 A DHCP pool named OFFICE-LAN was present:
 
-ip dhcp pool OFFICE-LAN
- network 192.168.1.0 255.255.255.0
- default-router 192.168.1.1
+    ip dhcp pool OFFICE-LAN
+     network 192.168.1.0 255.255.255.0
+     default-router 192.168.1.1
 
-The DHCP pool was also checked using:
+The DHCP pool was then inspected using:
 
-show ip dhcp pool
+    show ip dhcp pool
 
 The pool showed:
 
-Pool OFFICE-LAN
-Total addresses: 254
-Leased addresses: 0
+    Pool OFFICE-LAN
+    Total addresses: 254
+    Leased addresses: 0
 
 DHCP bindings were checked using:
 
-show ip dhcp binding
+    show ip dhcp binding
 
 No DHCP leases were present.
 
 DHCP conflicts were also checked using:
 
-show ip dhcp conflict
+    show ip dhcp conflict
 
 No DHCP conflicts were reported.
 
-🛠️ Connectivity Troubleshooting
+---
 
-To determine whether the problem was with the network connection or DHCP, PC0 was manually configured with a static IP address.
+# 8. 🛠️ Connectivity Troubleshooting
+
+To determine whether the problem was related to the physical network or DHCP, PC0 was manually configured with a static IP address.
 
 The following configuration was used:
 
-IP Address:       192.168.1.10
-Subnet Mask:      255.255.255.0
-Default Gateway:  192.168.1.1
+    IP Address:       192.168.1.10
+    Subnet Mask:      255.255.255.0
+    Default Gateway:  192.168.1.1
 
-After configuring the static IP, the PC was able to communicate with the router.
+After configuring the static IP address, PC0 was able to communicate with the router.
 
-📡 Connectivity Test
+This helped isolate the issue to the DHCP process rather than basic LAN connectivity.
 
-From PC0, the following command was used:
+---
 
-ping 192.168.1.1
+# 9. 📡 Connectivity Testing
+
+Connectivity between PC0 and the router was tested using:
+
+    ping 192.168.1.1
 
 The result was:
 
-Pinging 192.168.1.1 with 32 bytes of data:
+    Pinging 192.168.1.1 with 32 bytes of data:
 
-Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
-Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
-Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
-Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+    Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+    Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+    Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+    Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
 
-Packets: Sent = 4
-Received = 4
-Lost = 0 (0% loss)
-Result
+    Packets: Sent = 4
+    Received = 4
+    Lost = 0 (0% loss)
+
+### Result
+
+✅ Connectivity test successful
 
 The successful ping confirmed that:
 
-PC0 was connected to the switch
-The switch was forwarding traffic
-The router interface was reachable
-The IP address and subnet mask were correctly configured
-The default gateway was reachable
+- PC0 was connected to the switch
+- The switch was forwarding traffic
+- The router interface was reachable
+- The IP address was correctly configured
+- The subnet mask was correct
+- The default gateway was reachable
 
-The successful static-IP test helped isolate the problem to the DHCP process rather than basic LAN connectivity.
+---
 
-🔎 Verification Commands Used
+# 10. 📊 Network Configuration Summary
 
-The following commands were used during the lab:
+| Device | Interface | IP Address | Network |
+|---|---|---|---|
+| R1 | Gig0/0 | `192.168.1.1` | `192.168.1.0/24` |
+| PC0 | NIC | `192.168.1.10` | `192.168.1.0/24` |
+| PC1 | NIC | `192.168.1.x` | `192.168.1.0/24` |
+| PC2 | NIC | `192.168.1.x` | `192.168.1.0/24` |
 
-show ip interface brief
+---
+
+# 11. 🔎 Verification Commands
+
+The following commands were used throughout the lab.
+
+### Verify router interfaces
+
+    show ip interface brief
 
 Used to verify router interface status and IP addresses.
 
-show interfaces status
+### Verify switch ports
 
-Used to verify switch port connectivity.
+    show interfaces status
 
-show vlan brief
+Used to verify physical switch port connectivity.
 
-Used to verify VLAN membership.
+### Verify VLAN membership
 
-show running-config | section dhcp
+    show vlan brief
 
-Used to inspect the DHCP configuration.
+Used to verify VLAN membership and connected ports.
 
-show ip dhcp pool
+### Inspect DHCP configuration
+
+    show running-config | section dhcp
+
+Used to inspect the router's DHCP configuration.
+
+### Check DHCP pool
+
+    show ip dhcp pool
 
 Used to inspect the DHCP pool and available addresses.
 
-show ip dhcp binding
+### Check DHCP leases
 
-Used to check DHCP leases.
+    show ip dhcp binding
 
-show ip dhcp conflict
+Used to check whether DHCP leases had been assigned.
 
-Used to check for DHCP address conflicts.
+### Check DHCP conflicts
 
-ipconfig
+    show ip dhcp conflict
 
-Used on the PC to verify its IP configuration.
+Used to check for reported DHCP address conflicts.
 
-ping 192.168.1.1
+### Check PC configuration
+
+    ipconfig
+
+Used to verify the PC's IPv4 configuration.
+
+### Test connectivity
+
+    ping 192.168.1.1
 
 Used to test connectivity between PC0 and the router.
 
-📚 What I Learned
+---
+
+# 12. 📸 Screenshots
+
+## Network Topology
+
+![Network Topology](https://github.com/user-attachments/assets/43589187-32c2-4f69-9fbc-65e0eb1bcdf4)
+
+## PC0 IP Configuration
+
+![PC0 IP Configuration](https://github.com/user-attachments/assets/2cc4fb5c-7691-404e-9bf2-9b3d3ee100e4)
+
+## PC0 → Router Connectivity Test
+
+![PC0 Router Ping](https://github.com/user-attachments/assets/4b823687-70d1-49d7-b620-2cd70a8d06e7)
+
+## PC1 IP Configuration
+
+![PC1 IP Configuration](https://github.com/user-attachments/assets/f1f8a1c6-3422-495f-9237-bdebe0218ac0)
+
+## PC1 → Router Connectivity Test
+
+![PC1 Router Ping](https://github.com/user-attachments/assets/92de5dd8-f495-4719-a753-118310bc95e4)
+
+## PC2 IP Configuration
+
+![PC2 IP Configuration](https://github.com/user-attachments/assets/1e4c3392-2553-4d43-b922-64e394804d17)
+
+## PC2 → Router Connectivity Test
+
+![PC2 Router Ping](https://github.com/user-attachments/assets/15e37f08-a44b-4522-b61d-cb9b771cbb62)
+
+---
+
+# 13. 🧠 What I Learned
 
 Through this lab, I practiced:
 
-Basic LAN topology design
-IPv4 addressing
-Subnet masks
-Default gateways
-Cisco router interface configuration
-Cisco switch connectivity
-VLAN verification
-Static IP configuration
-DHCP configuration and troubleshooting
-Using ipconfig
-Using ping for connectivity testing
-Using Cisco IOS verification commands
-Troubleshooting a network systematically
-Using Cisco Packet Tracer for network simulation
-🧰 Tools Used
-Cisco Packet Tracer
-Cisco 2911 Router
-Cisco 2960 Switch
-📸 Screenshots
-Network Topology
-<img width="2876" height="1702" alt="topology" src="https://github.com/user-attachments/assets/43589187-32c2-4f69-9fbc-65e0eb1bcdf4" />
+- Basic LAN topology design
+- IPv4 addressing
+- Subnet masks
+- Default gateways
+- Cisco router interface configuration
+- Cisco switch connectivity
+- VLAN verification
+- Static IP configuration
+- DHCP configuration and troubleshooting
+- Using ipconfig
+- Using ping for connectivity testing
+- Using Cisco IOS verification commands
+- Systematic network troubleshooting
+- Network simulation using Cisco Packet Tracer
 
-PC0 IP Configuration
-<img width="2874" height="1424" alt="pc0-router-ping" src="https://github.com/user-attachments/assets/2cc4fb5c-7691-404e-9bf2-9b3d3ee100e4" />
+---
 
-PC0 → Router Connectivity Test
-<img width="2862" height="1426" alt="pc0-ip-config" src="https://github.com/user-attachments/assets/4b823687-70d1-49d7-b620-2cd70a8d06e7" />
+# 14. 🛠️ Troubleshooting Summary
 
-PC1 IP Configuration
-<img width="2876" height="1432" alt="pc1-router-ping" src="https://github.com/user-attachments/assets/f1f8a1c6-3422-495f-9237-bdebe0218ac0" />
+The main issue encountered during the lab was the failed DHCP request.
 
-PC1 → Router Connectivity Test
-<img width="2880" height="1414" alt="Screenshot 2026-08-24 173704" src="https://github.com/user-attachments/assets/92de5dd8-f495-4719-a753-118310bc95e4" />
+The PC initially received:
 
-PC2 IP Configuration
-<img width="2864" height="1420" alt="pc2-router-ping" src="https://github.com/user-attachments/assets/1e4c3392-2553-4d43-b922-64e394804d17" />
+    IPv4 Address: 0.0.0.0
 
-PC2 → Router Connectivity Test
-<img width="2874" height="1430" alt="Screenshot 2026-08-24 173741" src="https://github.com/user-attachments/assets/15e37f08-a44b-4522-b61d-cb9b771cbb62" />
+and reported:
 
+    DHCP request failed.
+    APIPA is being used.
 
+The router's DHCP configuration was investigated using several Cisco IOS commands.
 
+Although the OFFICE-LAN DHCP pool existed, no DHCP leases were present.
 
+A static IP configuration was then applied to PC0:
+
+    192.168.1.10/24
+    Gateway: 192.168.1.1
+
+The successful ping to the router confirmed that the underlying LAN connectivity was functioning.
+
+This troubleshooting process demonstrated how to separate Layer 2/Layer 3 connectivity problems from DHCP-specific problems.
+
+---
+
+# 15. ✅ Final Result
+
+The Small Office LAN was successfully built and tested.
+
+The final network provided:
+
+    PC0 ─┐
+    PC1 ─┼── SW1 ─── R1
+    PC2 ─┘          192.168.1.1
+
+The router, switch, and PCs were successfully connected, IPv4 addressing was configured, and connectivity between PC0 and the router was verified with 0% packet loss.
+
+The DHCP issue was investigated systematically, and static addressing was used to confirm that the underlying LAN was operational.
+
+---
+
+# 📁 Project Structure
+
+    01-basic-lan/
+    │
+    ├── README.md
+    ├── small-office-lan.pkt
+    ├── topology.png
+    ├── pc0-ip-config.png
+    ├── pc0-router-ping.png
+    ├── pc1-ip-config.png
+    ├── pc1-router-ping.png
+    ├── pc2-ip-config.png
+    └── pc2-router-ping.png
+
+---
